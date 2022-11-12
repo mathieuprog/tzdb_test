@@ -37,6 +37,11 @@ The result is written in `/files/output`.
 
 Use your favorite diff tool to compare the result between the output of the libraries and Java. I consider the Java output the source of truth.
 
+At the time of writing this,
+* the output of Java, `tz` and `time_zone_info` is identical;
+* `tzdata` generates a lot of wrong dates;
+* `zoneinfo` generates wrong dates for some special time zones and for dates in the year 2038.
+
 ### Performance
 
 Time spent generating the result is logged in the console, giving some idea of the difference in terms of performance.
