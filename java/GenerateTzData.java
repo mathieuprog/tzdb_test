@@ -76,13 +76,12 @@ public class GenerateTzData {
 
     String basePath = new File("").getAbsolutePath();
     String inputDir = Paths.get(basePath, "files/input/").toString();
-    String outputDir = Paths.get(basePath, "files/output/").toString();
+
+    String outputDir = Files.createDirectories(Paths.get(basePath, "files/output/", ianaTzVersion, "java")).toString();
 
     for (File file : new File(outputDir).listFiles()) file.delete();
 
     Charset utf8 = StandardCharsets.UTF_8;
-
-    outputDir = Files.createDirectories(Paths.get(outputDir, ianaTzVersion, "java")).toString();
 
     File f = new File(inputDir);
     String[] file_paths = f.list();
