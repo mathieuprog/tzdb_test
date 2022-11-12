@@ -66,7 +66,7 @@ The input files list 51,112 dates.
 America/Curacao;1912-02-11
 ```
 
-For each of these dates, 96 date times are generated. The first date time starts at midnight and is increased by a step of 15 minutes until 23:45.
+For each of these dates, the program generates 96 date times . The first date time starts at midnight and is increased by a step of 15 minutes until 23:45.
 
 This results in 4,906,752 (51,112 x 96) date times generated
 
@@ -84,4 +84,6 @@ naive_date_time
 |> DateTime.shift_zone(timezone)
 ```
 
-That's a total of 9,813,504 date times being generated.
+That makes for a total of 9,813,504 date times being generated.
+
+The date times are written into files which can be compared between the different libraries (using a diff tool) to detect any errors and inconsistencies.
