@@ -58,6 +58,7 @@ System used:
 ## How does it work?
 
 Predefined dates, against which time zone operations are tested, are located in `/files/input`.
+Those dates include a lot of dates for which edge cases can be found (ambiguous times, gaps, etc.).
 
 The input files list 51,112 dates.
 
@@ -66,7 +67,7 @@ The input files list 51,112 dates.
 America/Curacao;1912-02-11
 ```
 
-For each of these dates, the program generates 96 date times . The first date time starts at midnight and is increased by a step of 15 minutes until 23:45.
+For each of these dates, the program generates 96 date times. The first date time starts at midnight and is increased by a step of 15 minutes until 23:45.
 
 This results in 4,906,752 (51,112 x 96) date times generated
 
