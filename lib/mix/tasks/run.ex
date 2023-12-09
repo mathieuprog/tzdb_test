@@ -1,6 +1,9 @@
 defmodule Mix.Tasks.Tzdb.Run do
   use Mix.Task
 
+  @input "files/input"
+  # @input "files/input_far_future"
+
   def run(command_line_args) do
     {lib, module, version} = parse_args(command_line_args)
 
@@ -63,7 +66,7 @@ defmodule Mix.Tasks.Tzdb.Run do
   defp do_offset_to_string({h, m, s}), do: :io_lib.format("~2..0B:~2..0B:~2..0B", [h, m, s])
 
   defp generate_files(time_zone_database, version, outputDir) do
-    inputDir = Path.join([File.cwd!(), "files/input"])
+    inputDir = Path.join([File.cwd!(), @input])
 
     File.rm_rf!(outputDir)
     File.mkdir_p!(outputDir)
