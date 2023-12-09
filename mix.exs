@@ -5,7 +5,9 @@ defmodule Tzdb.MixProject do
     [
       app: :tzdb_test,
       version: "0.2.0",
+      package: package(),
       elixir: "~> 1.14",
+      description: "Testing Elixir time zone databases",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -14,6 +16,16 @@ defmodule Tzdb.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["Apache-2.0"],
+      maintainers: ["Mathieu Decaffmeyer"],
+      links: %{
+        "GitHub" => "https://github.com/mathieuprog/tzdb_test"
+      }
     ]
   end
 
