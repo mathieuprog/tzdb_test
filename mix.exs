@@ -34,7 +34,8 @@ defmodule Tzdb.MixProject do
       {:tz, "~> 0.26.4"},
       {:time_zone_info, "~> 0.7.0"},
       {:tzdata, "~> 1.1"},
-      {:zoneinfo, "~> 0.1.7"}
+      {:zoneinfo, "~> 0.1.7"},
+      {:ex_doc, "~> 0.29", only: :dev}
     ]
   end
 end
