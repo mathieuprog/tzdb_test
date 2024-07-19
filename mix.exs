@@ -31,11 +31,11 @@ defmodule Tzdb.MixProject do
 
   defp deps do
     [
-      {:tz, "~> 0.26.4"},
-      {:time_zone_info, "~> 0.7.0"},
-      {:tzdata, "~> 1.1"},
-      {:zoneinfo, "~> 0.1.7"},
-      {:ex_doc, "~> 0.29", only: :dev}
+      {:tz, "~> 0.26.5"},
+      {:time_zone_info, "~> 0.7.3"},
+      {:tzdata, "~> 1.1.1"},
+      {:zoneinfo, "~> 0.1.8"},
+      {:ex_doc, "~> 0.34", only: :dev}
     ]
   end
 end
