@@ -11,22 +11,32 @@ defmodule Mix.Tasks.Tzdb.Run do
 
     time =
       measure(fn ->
-        generate_files(time_zone_db, version, Path.join([File.cwd!(), "files/output", version, to_string(lib)]))
+        generate_files(
+          time_zone_db,
+          version,
+          Path.join([File.cwd!(), "files/output", version, to_string(lib)])
+        )
       end)
 
     Mix.shell().info("Time: #{round(time)} seconds")
   end
 
   defp parse_args(["tz"]), do: {:tz, Tz, start!(:tz) && Tz.iana_version()}
-  defp parse_args(["time_zone_info"]), do: {:time_zone_info, TimeZoneInfo, start!(:time_zone_info) && TimeZoneInfo.iana_version()}
+
+  defp parse_args(["time_zone_info"]),
+    do: {:time_zone_info, TimeZoneInfo, start!(:time_zone_info) && TimeZoneInfo.iana_version()}
+
   defp parse_args(["zoneinfo"]), do: {:zoneinfo, Zoneinfo, start!(:zoneinfo) && zoneifo_version()}
   defp parse_args(["tzdata"]), do: {:tzdata, Tzdata, start!(:tzdata) && Tzdata.tzdata_version()}
+
   defp parse_args(_) do
-    Mix.raise "command requires one argument: the name of the library to generate data for (tz, time_zone_info, zoneinfo, tzdata)"
+    Mix.raise(
+      "command requires one argument: the name of the library to generate data for (tz, time_zone_info, zoneinfo, tzdata)"
+    )
   end
 
   defp start!(lib) do
-    {:ok, _ } = Application.ensure_all_started(lib)
+    {:ok, _} = Application.ensure_all_started(lib)
     :ok
   end
 
@@ -37,7 +47,7 @@ defmodule Mix.Tasks.Tzdb.Run do
 
   defp measure(function) do
     function
-    |> :timer.tc
+    |> :timer.tc()
     |> elem(0)
     |> Kernel./(1_000_000)
   end
@@ -45,7 +55,7 @@ defmodule Mix.Tasks.Tzdb.Run do
   @with_zone_abbr true
 
   defp date_time_to_string(dt) do
-    dt_string = String.slice(DateTime.to_iso8601(dt), 0..-7)
+    dt_string = Calendar.strftime(dt, "%c")
     dt_string <> offset_to_string(dt.utc_offset + dt.std_offset)
   end
 
@@ -97,7 +107,8 @@ defmodule Mix.Tasks.Tzdb.Run do
   end
 
   defp write_data(timezone, date, time, time_zone_database) do
-    {:ok, naive_date_time} = NaiveDateTime.new(date.year, date.month, date.day, time.hour, time.minute, 0)
+    {:ok, naive_date_time} =
+      NaiveDateTime.new(date.year, date.month, date.day, time.hour, time.minute, 0)
 
     output = [timezone, NaiveDateTime.to_iso8601(naive_date_time)]
 
@@ -106,18 +117,20 @@ defmodule Mix.Tasks.Tzdb.Run do
         try do
           case DateTime.from_naive(naive_date_time, timezone, time_zone_database) do
             {:ambiguous, dt1, dt2} ->
-              ["ambiguous", date_time_to_string(dt1)]
-                ++ if(@with_zone_abbr, do: [dt1.zone_abbr], else: [])
-                ++ [date_time_to_string(dt2)]
-                ++ if(@with_zone_abbr, do: [dt2.zone_abbr], else: [])
+              ["ambiguous", date_time_to_string(dt1)] ++
+                if(@with_zone_abbr, do: [dt1.zone_abbr], else: []) ++
+                [date_time_to_string(dt2)] ++
+                if(@with_zone_abbr, do: [dt2.zone_abbr], else: [])
+
             {:gap, dt1, dt2} ->
-              ["gap", date_time_to_string(dt1)]
-                ++ if(@with_zone_abbr, do: [dt1.zone_abbr], else: [])
-                ++ [date_time_to_string(dt2)]
-                ++ if(@with_zone_abbr, do: [dt2.zone_abbr], else: [])
+              ["gap", date_time_to_string(dt1)] ++
+                if(@with_zone_abbr, do: [dt1.zone_abbr], else: []) ++
+                [date_time_to_string(dt2)] ++
+                if(@with_zone_abbr, do: [dt2.zone_abbr], else: [])
+
             {:ok, dt} ->
-              ["ok", date_time_to_string(dt)]
-                ++ if(@with_zone_abbr, do: [dt.zone_abbr], else: [])
+              ["ok", date_time_to_string(dt)] ++
+                if(@with_zone_abbr, do: [dt.zone_abbr], else: [])
           end
         rescue
           error -> ["error", error.__struct__]
@@ -125,15 +138,16 @@ defmodule Mix.Tasks.Tzdb.Run do
 
     output =
       output ++
-      try do
-        {:ok, dt} =
-          DateTime.from_naive!(naive_date_time, "Etc/UTC", time_zone_database)
-          |> DateTime.shift_zone(timezone, time_zone_database)
-        [date_time_to_string(dt)]
-          ++ if(@with_zone_abbr, do: [dt.zone_abbr], else: [])
-      rescue
-        error -> ["error", error.__struct__]
-      end
+        try do
+          {:ok, dt} =
+            DateTime.from_naive!(naive_date_time, "Etc/UTC", time_zone_database)
+            |> DateTime.shift_zone(timezone, time_zone_database)
+
+          [date_time_to_string(dt)] ++
+            if(@with_zone_abbr, do: [dt.zone_abbr], else: [])
+        rescue
+          error -> ["error", error.__struct__]
+        end
 
     output = Enum.join(output, ";") <> "\n"
 
