@@ -14,19 +14,19 @@ This repository allows to perform time zone operations on a huge set of predefin
 
 ## Generate the Java result set
 
-Generate the result for Java by executing `GenerateTzData.java` in `/java`.
+Generate the result for Java by executing `java java/GenerateTzData.java`.
 
 The result is written in `/files/output`.
 
 ## Generate the Elixir libraries result set
 
-Execute the mix task to generate the result for the Elixir libraries:
+Execute the mix task to generate the result for the Elixir libraries (you can change the second argument to "files/input_far_future" if you want to switch the dataset):
 
 ```bash
-mix tzdb.run tz
-mix tzdb.run time_zone_info
-mix tzdb.run zoneinfo
-mix tzdb.run tzdata
+mix tzdb.run tz "files/input"
+mix tzdb.run time_zone_info "files/input"
+mix tzdb.run zoneinfo "files/input"
+mix tzdb.run tzdata "files/input"
 ```
 
 The result is written in `/files/output`.
@@ -44,21 +44,70 @@ At the time of writing this,
 
 ### Performance
 
-Time spent generating the result is logged in the console, giving some idea of the difference in terms of performance.
+The results from `mix run benchmark.exs` (removed Logging output):
 
-The time taken for each library to generate the output on my system are:
-*  ~50 seconds for `tz`
-*  ~50 seconds for `time_zone_info`
-*  ~80 seconds for `zoneinfo`
-*  ~160 seconds for `tzdata`
+```
+Generated tzdb_test app
+Operating System: macOS
+CPU Information: Apple M3 Pro
+Number of Available Cores: 11
+Available memory: 36 GB
+Elixir 1.17.2
+Erlang 27.0.1
+JIT enabled: true
 
-System used:
-* Operating system: macOS
-* CPU: Apple M2
-* Available cores: 8
-* Available memory: 16 GB
-* Elixir version: 1.14.1
-* Erlang version: 25.1.2
+Benchmark suite executing with the following configuration:
+warmup: 2 s
+time: 5 s
+memory time: 0 ns
+reduction time: 0 ns
+parallel: 1
+inputs: far future, standard
+Estimated total run time: 1 min 10 s
+
+Benchmarking java with input far future ...
+Benchmarking java with input standard ...
+Benchmarking time_zone_info with input far future ...
+Benchmarking time_zone_info with input standard ...
+Benchmarking tz with input far future ...
+Benchmarking tz with input standard ...
+Benchmarking tzdata with input far future ...
+Benchmarking tzdata with input standard ...
+Benchmarking zoneinfo with input far future ...
+Benchmarking zoneinfo with input standard ...
+Calculating statistics...
+Formatting results...
+
+##### With input far future #####
+Name                     ips        average  deviation         median         99th %
+java                    0.42         2.40 s     ±1.91%         2.39 s         2.45 s
+time_zone_info        0.0695        14.39 s     ±0.00%        14.39 s        14.39 s
+tz                    0.0259        38.61 s     ±0.00%        38.61 s        38.61 s
+zoneinfo              0.0252        39.71 s     ±0.00%        39.71 s        39.71 s
+tzdata                0.0220        45.41 s     ±0.00%        45.41 s        45.41 s
+
+Comparison: 
+java                    0.42
+time_zone_info        0.0695 - 6.00x slower +11.99 s
+tz                    0.0259 - 16.10x slower +36.21 s
+zoneinfo              0.0252 - 16.56x slower +37.31 s
+tzdata                0.0220 - 18.94x slower +43.02 s
+
+##### With input standard #####
+Name                     ips        average  deviation         median         99th %
+java                   0.183         5.47 s     ±0.00%         5.47 s         5.47 s
+zoneinfo              0.0416        24.04 s     ±0.00%        24.04 s        24.04 s
+tz                    0.0408        24.51 s     ±0.00%        24.51 s        24.51 s
+time_zone_info        0.0405        24.67 s     ±0.00%        24.67 s        24.67 s
+tzdata               0.00771       129.72 s     ±0.00%       129.72 s       129.72 s
+
+Comparison: 
+java                   0.183
+zoneinfo              0.0416 - 4.40x slower +18.57 s
+tz                    0.0408 - 4.48x slower +19.04 s
+time_zone_info        0.0405 - 4.51x slower +19.20 s
+tzdata               0.00771 - 23.72x slower +124.25 s
+```
 
 ## How does it work?
 

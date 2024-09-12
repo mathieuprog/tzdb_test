@@ -67,6 +67,9 @@ public class GenerateTzData {
   }
 
   public static void main(String[] args) throws IOException {
+    if (args.length < 1) {
+            throw new IllegalArgumentException("Missing command line argument: input directory path.");
+        }
     String ianaTzVersion = java.time.zone.ZoneRulesProvider
             .getVersions("UTC")
             .lastEntry()
@@ -75,7 +78,8 @@ public class GenerateTzData {
     System.out.println("IANA tz version: " + ianaTzVersion);
 
     String basePath = new File("").getAbsolutePath();
-    String inputDir = Paths.get(basePath, "files/input/").toString();
+    String input = args[0];
+    String inputDir = Paths.get(basePath, input).toString();
 
     String outputDir = Files.createDirectories(Paths.get(basePath, "files/output/", ianaTzVersion, "java")).toString();
 
